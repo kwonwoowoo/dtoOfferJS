@@ -1,249 +1,14 @@
 (function() {
   'use strict';
 
-  // React-like utility functions
-  function createElement(tag, props = {}, ...children) {
-    const element = document.createElement(tag);
-    
-    // Set attributes
-    Object.keys(props).forEach(key => {
-      if (key === 'className') {
-        element.className = props[key];
-      } else if (key === 'onClick') {
-        element.addEventListener('click', props[key]);
-      } else if (key.startsWith('data-')) {
-        element.setAttribute(key, props[key]);
-      } else if (key === 'style' && typeof props[key] === 'object') {
-        Object.assign(element.style, props[key]);
-      } else {
-        element.setAttribute(key, props[key]);
-      }
-    });
-
-    // Add children
-    children.flat().forEach(child => {
-      if (typeof child === 'string') {
-        element.appendChild(document.createTextNode(child));
-      } else if (child instanceof Node) {
-        element.appendChild(child);
-      }
-    });
-
-    return element;
+  // Utility functions
+  function createElement(tag, className, content) {
+    const el = document.createElement(tag);
+    if (className) el.className = className;
+    if (content) el.innerHTML = content;
+    return el;
   }
 
-  // Icon components (Lucide icons as SVG)
-  const icons = {
-    ArrowRight: () => createElement('svg', {
-      className: 'lucide-arrow-right',
-      width: '20',
-      height: '20',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('path', { d: 'M5 12h14' }), createElement('path', { d: 'M12 5l7 7-7 7' })),
-
-    CheckCircle: () => createElement('svg', {
-      className: 'lucide-check-circle',
-      width: '20',
-      height: '20',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('path', { d: 'M22 11.08V12a10 10 0 1 1-5.93-9.14' }), createElement('path', { d: 'M9 11l3 3L22 4' })),
-
-    Clock: () => createElement('svg', {
-      className: 'lucide-clock',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('circle', { cx: '12', cy: '12', r: '10' }), createElement('polyline', { points: '12,6 12,12 16,14' })),
-
-    Users: () => createElement('svg', {
-      className: 'lucide-users',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('path', { d: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' }), createElement('circle', { cx: '9', cy: '7', r: '4' }), createElement('path', { d: 'M22 21v-2a4 4 0 0 0-3-3.87' }), createElement('path', { d: 'M16 3.13a4 4 0 0 1 0 7.75' })),
-
-    Star: () => createElement('svg', {
-      className: 'lucide-star',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'currentColor',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('polygon', { points: '12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26' })),
-
-    Calendar: () => createElement('svg', {
-      className: 'lucide-calendar',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('rect', { x: '3', y: '4', width: '18', height: '18', rx: '2', ry: '2' }), createElement('line', { x1: '16', y1: '2', x2: '16', y2: '6' }), createElement('line', { x1: '8', y1: '2', x2: '8', y2: '6' }), createElement('line', { x1: '3', y1: '10', x2: '21', y2: '10' })),
-
-    Award: () => createElement('svg', {
-      className: 'lucide-award',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('circle', { cx: '12', cy: '8', r: '7' }), createElement('polyline', { points: '8.21,13.89 7,23 12,20 17,23 15.79,13.88' })),
-
-    TrendingUp: () => createElement('svg', {
-      className: 'lucide-trending-up',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('polyline', { points: '22,7 13.5,15.5 8.5,10.5 2,17' }), createElement('polyline', { points: '16,7 22,7 22,13' })),
-
-    Target: () => createElement('svg', {
-      className: 'lucide-target',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('circle', { cx: '12', cy: '12', r: '10' }), createElement('circle', { cx: '12', cy: '12', r: '6' }), createElement('circle', { cx: '12', cy: '12', r: '2' })),
-
-    Shield: () => createElement('svg', {
-      className: 'lucide-shield',
-      width: '20',
-      height: '20',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('path', { d: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10' })),
-
-    User: () => createElement('svg', {
-      className: 'lucide-user',
-      width: '20',
-      height: '20',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('path', { d: 'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' }), createElement('circle', { cx: '12', cy: '7', r: '4' })),
-
-    Phone: () => createElement('svg', {
-      className: 'lucide-phone',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('path', { d: 'M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z' })),
-
-    Mail: () => createElement('svg', {
-      className: 'lucide-mail',
-      width: '16',
-      height: '16',
-      viewBox: '0 0 24 24',
-      fill: 'none',
-      stroke: 'currentColor',
-      'stroke-width': '2',
-      'stroke-linecap': 'round',
-      'stroke-linejoin': 'round'
-    }, createElement('path', { d: 'M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z' }), createElement('polyline', { points: '22,6 12,13 2,6' }))
-  };
-
-  // Highlight component
-  function createHighlight(text, type = 'primary') {
-    const highlightClasses = {
-      primary: 'bg-blue-100 text-blue-800 px-1 rounded',
-      secondary: 'bg-red-100 text-red-800 px-1 rounded',
-      green: 'bg-green-100 text-green-800 px-1 rounded',
-      marker: 'bg-yellow-200 text-yellow-900 px-1 rounded'
-    };
-    
-    return createElement('span', { className: highlightClasses[type] || highlightClasses.primary }, text);
-  }
-
-  // Badge component
-  function createBadge(text, className = '') {
-    return createElement('span', {
-      className: `inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${className}`
-    }, text);
-  }
-
-  // Button component
-  function createButton(text, onClick, className = '', icon = null) {
-    const button = createElement('button', {
-      className: `inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background ${className}`,
-      onClick: onClick
-    }, text);
-
-    if (icon) {
-      button.appendChild(createElement('span', { className: 'ml-2' }, icon));
-    }
-
-    return button;
-  }
-
-  // Card components
-  function createCard(children, className = '') {
-    return createElement('div', {
-      className: `rounded-lg border bg-card text-card-foreground shadow-sm ${className}`
-    }, children);
-  }
-
-  function createCardContent(children, className = '') {
-    return createElement('div', { className: `p-6 ${className}` }, children);
-  }
-
-  // Separator component
-  function createSeparator() {
-    return createElement('div', { className: 'shrink-0 bg-border h-[1px] w-full my-4' });
-  }
-
-  // State management
-  let urgencyVisible = true;
-
-  // Tracking functions
   function trackEvent(eventName, properties = {}) {
     if (window.mixpanel) {
       window.mixpanel.track(eventName, properties);
@@ -263,665 +28,623 @@
       return;
     }
 
-    // Track page view
     trackEvent('DTO Offer Page View');
 
-    // Create main container
-    const mainDiv = createElement('div', { className: 'min-h-screen bg-white' });
+    const html = `
+      <div class="min-h-screen bg-white">
+        <!-- Urgency Bar -->
+        <div id="urgency-bar" class="bg-red-600 text-white py-2 px-4 text-center text-sm font-medium">
+          <div class="container mx-auto flex justify-between items-center">
+            <span>⚡ Last Chance: Only 12 spots remaining at this exclusive rate</span>
+            <button onclick="document.getElementById('urgency-bar').style.display='none'" class="text-white hover:text-gray-200">×</button>
+          </div>
+        </div>
 
-    // Urgency Bar
-    if (urgencyVisible) {
-      const urgencyBar = createElement('div', {
-        className: 'bg-red-600 text-white py-2 px-4 text-center text-sm font-medium'
-      });
-      
-      const urgencyContent = createElement('div', {
-        className: 'container mx-auto flex justify-between items-center'
-      });
-      
-      urgencyContent.appendChild(createElement('span', {}, '⚡ Last Chance: Only 12 spots remaining at this exclusive rate'));
-      
-      const closeBtn = createElement('button', {
-        className: 'text-white hover:text-gray-200',
-        onClick: () => {
-          urgencyVisible = false;
-          urgencyBar.style.display = 'none';
-        }
-      }, '×');
-      
-      urgencyContent.appendChild(closeBtn);
-      urgencyBar.appendChild(urgencyContent);
-      mainDiv.appendChild(urgencyBar);
-    }
+        <!-- Hero Section -->
+        <section class="relative pt-8 md:pt-12 pb-12 md:pb-20 overflow-hidden bg-gradient-to-b from-gray-50 to-white">
+          <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="max-w-5xl mx-auto text-center">
+              <div class="mb-6 bg-red-600 text-white px-6 py-2 text-sm font-bold inline-block rounded">
+                EXCLUSIVE 80% OFF - LIMITED TIME ONLY
+              </div>
 
-    // Hero Section
-    const heroSection = createElement('section', {
-      className: 'relative pt-8 md:pt-12 pb-12 md:pb-20 overflow-hidden bg-gradient-to-b from-gray-50 to-white'
-    });
+              <h1 class="text-4xl md:text-6xl lg:text-7xl font-black mb-6 md:mb-8 leading-tight tracking-tight">
+                <span class="bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">Wealth Through Property</span>
+                <br />2-Day <span class="bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">Intensive</span>
+              </h1>
 
-    const heroContainer = createElement('div', {
-      className: 'container mx-auto px-4 md:px-6 relative z-10'
-    });
+              <p class="text-lg md:text-xl text-gray-700 mb-8 max-w-4xl mx-auto font-medium">
+                Join Paul Smith, Abi Hookway, and Gordie Dutfield for an exclusive 2-day property 
+                investment masterclass. Learn the exact strategies that have generated over
+                <span class="font-extrabold text-blue-600 bg-yellow-200 px-2 py-1 rounded">£30M in student portfolio value</span>
+              </p>
 
-    const heroContent = createElement('div', {
-      className: 'max-w-5xl mx-auto text-center transform transition-all duration-700 opacity-100 translate-y-0'
-    });
+              <!-- Price & CTA -->
+              <div class="mb-8 max-w-2xl mx-auto">
+                <div class="border-2 border-blue-600 shadow-2xl bg-white rounded-lg">
+                  <div class="p-8">
+                    <div class="text-center mb-6">
+                      <div class="flex justify-center items-baseline gap-4 mb-4">
+                        <span class="text-5xl font-black text-blue-600">£99</span>
+                        <div class="text-left">
+                          <div class="text-2xl line-through text-gray-500">£497</div>
+                          <div class="text-sm font-bold text-green-600">Save £398 (80% OFF)</div>
+                        </div>
+                      </div>
+                      
+                      <button id="main-cta-btn" class="w-full py-6 text-xl font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors mb-4">
+                        Secure My Spot Now →
+                      </button>
 
-    // Badge
-    heroContent.appendChild(createBadge('EXCLUSIVE 80% OFF - LIMITED TIME ONLY', 'mb-6 bg-red-600 text-white px-6 py-2 text-sm font-bold'));
+                      <div class="flex justify-center gap-4 items-center text-sm text-gray-600">
+                        <div class="flex items-center">
+                          <svg class="h-4 w-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                          </svg>
+                          <span>Money-Back Guarantee</span>
+                        </div>
+                        <div class="flex items-center">
+                          <svg class="h-4 w-4 text-red-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                          </svg>
+                          <span>Offer Expires Soon</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-    // Main headline
-    const h1 = createElement('h1', {
-      className: 'text-4xl md:text-6xl lg:text-7xl font-black mb-6 md:mb-8 leading-[1.05] tracking-tight'
-    });
-    h1.appendChild(createHighlight('Wealth Through Property', 'secondary'));
-    h1.appendChild(createElement('br'));
-    h1.appendChild(document.createTextNode('2-Day '));
-    h1.appendChild(createHighlight('Intensive', 'green'));
-    heroContent.appendChild(h1);
+              <div class="flex justify-center gap-6 items-center text-sm text-gray-600">
+                <div class="flex items-center">
+                  <svg class="h-4 w-4 text-blue-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                  </svg>
+                  <span>2 Full Days Training</span>
+                </div>
+                <div class="flex items-center">
+                  <svg class="h-4 w-4 text-blue-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                  </svg>
+                  <span>Limited to 50 Attendees</span>
+                </div>
+                <div class="flex items-center">
+                  <svg class="h-4 w-4 text-blue-600 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  </svg>
+                  <span>CPD Accredited</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    // Subtitle
-    const subtitle = createElement('p', {
-      className: 'text-lg md:text-xl text-foreground/90 mb-8 max-w-4xl mx-auto font-medium'
-    });
-    subtitle.innerHTML = 'Join Paul Smith, Abi Hookway, and Gordie Dutfield for an exclusive 2-day property investment masterclass. Learn the exact strategies that have generated over ';
-    subtitle.appendChild(createElement('span', { className: 'font-extrabold text-primary' }, createHighlight('£30M in student portfolio value', 'marker')));
-    heroContent.appendChild(subtitle);
+        <!-- What's Included Section -->
+        <section class="py-12 md:py-20 bg-gray-50">
+          <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-6xl mx-auto">
+              <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-black mb-6">
+                  Your Complete <span class="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Training Package</span>
+                </h2>
+                <p class="text-lg text-gray-700">
+                  Everything you need to build a profitable property portfolio
+                </p>
+              </div>
 
-    // Price & CTA Card
-    const priceCard = createCard(null, 'border-2 border-primary shadow-2xl mb-8 max-w-2xl mx-auto');
-    const priceContent = createCardContent(null, 'p-8');
-    
-    const priceSection = createElement('div', { className: 'text-center mb-6' });
-    
-    const priceDisplay = createElement('div', { className: 'flex justify-center items-baseline gap-4 mb-4' });
-    priceDisplay.appendChild(createElement('span', { className: 'text-5xl font-black text-primary' }, '£99'));
-    
-    const priceDetails = createElement('div', { className: 'text-left' });
-    priceDetails.appendChild(createElement('div', { className: 'text-2xl line-through text-gray-500' }, '£497'));
-    priceDetails.appendChild(createElement('div', { className: 'text-sm font-bold text-green-600' }, 'Save £398 (80% OFF)'));
-    priceDisplay.appendChild(priceDetails);
-    
-    priceSection.appendChild(priceDisplay);
-    
-    // CTA Button
-    const ctaButton = createButton('Secure My Spot Now', handleCheckoutClick, 'w-full py-6 text-xl font-bold bg-primary text-white hover:bg-primary/90 mb-4', icons.ArrowRight());
-    priceSection.appendChild(ctaButton);
-    
-    // Trust indicators
-    const trustIndicators = createElement('div', { className: 'flex justify-center gap-4 items-center text-sm text-foreground/70' });
-    
-    const guarantee = createElement('div', { className: 'flex items-center' });
-    guarantee.appendChild(icons.Shield());
-    guarantee.appendChild(createElement('span', { className: 'ml-1' }, 'Money-Back Guarantee'));
-    
-    const expires = createElement('div', { className: 'flex items-center' });
-    expires.appendChild(icons.Clock());
-    expires.appendChild(createElement('span', { className: 'ml-1' }, 'Offer Expires Soon'));
-    
-    trustIndicators.appendChild(guarantee);
-    trustIndicators.appendChild(expires);
-    priceSection.appendChild(trustIndicators);
-    
-    priceContent.appendChild(priceSection);
-    priceCard.appendChild(priceContent);
-    heroContent.appendChild(priceCard);
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- 2-Day Live Training -->
+                <div class="border-2 border-blue-200 shadow-lg bg-white rounded-lg">
+                  <div class="p-8">
+                    <div class="text-center mb-6">
+                      <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <svg class="h-8 w-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                      <h3 class="text-2xl font-bold mb-4">2-Day Live Training Includes:</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">How to safely access your property equity for new investments</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Buy-refurb-refinance mastery training</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Serviced accommodation business setup</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Sourcing & selling deals for £10k+ monthly</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">No money down deal strategies</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Property LTD entity setup & management</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Live Q&A sessions</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Mindset training</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">Complete property toolkit</span>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-500 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-sm">90-day follow-up support</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-    // Bottom hero indicators
-    const bottomIndicators = createElement('div', { className: 'flex justify-center gap-6 items-center text-sm text-foreground/70' });
-    
-    const indicator1 = createElement('div', { className: 'flex items-center' });
-    indicator1.appendChild(icons.Calendar());
-    indicator1.appendChild(createElement('span', { className: 'ml-1' }, '2 Full Days Training'));
-    
-    const indicator2 = createElement('div', { className: 'flex items-center' });
-    indicator2.appendChild(icons.Users());
-    indicator2.appendChild(createElement('span', { className: 'ml-1' }, 'Limited to 50 Attendees'));
-    
-    const indicator3 = createElement('div', { className: 'flex items-center' });
-    indicator3.appendChild(icons.Award());
-    indicator3.appendChild(createElement('span', { className: 'ml-1' }, 'CPD Accredited'));
-    
-    bottomIndicators.appendChild(indicator1);
-    bottomIndicators.appendChild(indicator2);
-    bottomIndicators.appendChild(indicator3);
-    heroContent.appendChild(bottomIndicators);
+                <!-- Exclusive Bonuses -->
+                <div class="border-2 border-green-200 shadow-lg bg-white rounded-lg">
+                  <div class="p-8">
+                    <div class="text-center mb-6">
+                      <div class="mb-4 bg-green-600 text-white px-4 py-2 inline-block rounded">
+                        EXCLUSIVE BONUSES
+                      </div>
+                      <h3 class="text-2xl font-bold mb-2">Premium Resources</h3>
+                      <p class="text-sm text-gray-600">Valued at £5,625 - Included FREE</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-600 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                          <span class="font-medium text-sm">£100 Touchstone Education Voucher</span>
+                          <p class="text-xs text-gray-500">Redeemable across our complete course portfolio</p>
+                        </div>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-600 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                          <span class="font-medium text-sm">Property Success E-Book Collection (£30 value)</span>
+                          <p class="text-xs text-gray-500">£180K profit in 6 months through strategic property flipping</p>
+                        </div>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-600 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                          <span class="font-medium text-sm">Advanced Flipping Analysis Tool (£495 value)</span>
+                          <p class="text-xs text-gray-500">Professional-grade calculator for property valuation and profit estimation</p>
+                        </div>
+                      </div>
+                      <div class="flex items-start gap-3">
+                        <svg class="h-5 w-5 text-green-600 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                          <span class="font-medium text-sm">Wealth Assessment Platform (£5,000 value)</span>
+                          <p class="text-xs text-gray-500">Comprehensive wealth positioning and growth projections, plus our Net Worth Calculator</p>
+                        </div>
+                      </div>
+                    </div>
 
-    heroContainer.appendChild(heroContent);
-    heroSection.appendChild(heroContainer);
-    mainDiv.appendChild(heroSection);
+                    <div class="border-t border-gray-200 my-6"></div>
+                    
+                    <div class="text-center">
+                      <div class="text-2xl font-black text-green-600 mb-2">Total Value: £5,625</div>
+                      <div class="text-sm text-gray-600">Your Investment: £99</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-    // What's Included Section
-    const includedSection = createElement('section', { className: 'py-12 md:py-20 bg-gray-50' });
-    const includedContainer = createElement('div', { className: 'container mx-auto px-4 md:px-6' });
-    const includedContent = createElement('div', { className: 'max-w-6xl mx-auto' });
+              <!-- CTA Section -->
+              <div class="text-center">
+                <div class="border-2 border-blue-600 shadow-2xl max-w-2xl mx-auto bg-white rounded-lg">
+                  <div class="p-8">
+                    <h3 class="text-2xl font-bold mb-4">Ready to Transform Your Financial Future?</h3>
+                    <p class="text-gray-600 mb-6">
+                      Join 1,200+ successful students who've used these exact strategies to build wealth through property
+                    </p>
+                    
+                    <button id="secondary-cta-btn" class="w-full py-6 text-xl font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors mb-4">
+                      Get My WTP Ticket for £99 →
+                    </button>
+                    
+                    <p class="text-xs text-gray-500">
+                      Protected by our 100% money-back guarantee
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    // Section header
-    const includedHeader = createElement('div', { className: 'text-center mb-12' });
-    const includedH2 = createElement('h2', { className: 'text-3xl md:text-5xl font-black mb-6' });
-    includedH2.appendChild(document.createTextNode('Your Complete '));
-    includedH2.appendChild(createHighlight('Training Package', 'primary'));
-    includedHeader.appendChild(includedH2);
-    includedHeader.appendChild(createElement('p', { className: 'text-lg text-foreground/80' }, 'Everything you need to build a profitable property portfolio'));
-    includedContent.appendChild(includedHeader);
+        <!-- Meet Your Trainers -->
+        <section class="py-12 md:py-20 bg-white">
+          <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-6xl mx-auto">
+              <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-black mb-6">
+                  Meet Your <span class="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Expert Trainers</span>
+                </h2>
+              </div>
 
-    // Grid container
-    const gridContainer = createElement('div', { className: 'grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12' });
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- Paul Smith -->
+                <div class="border-2 border-blue-200 shadow-lg bg-white rounded-lg">
+                  <div class="p-8">
+                    <div class="flex items-start gap-6">
+                      <div class="w-24 h-24 bg-gray-200 rounded-full flex-shrink-0"></div>
+                      <div>
+                        <h3 class="text-xl font-bold mb-2">Paul Smith</h3>
+                        <p class="text-sm text-blue-600 font-medium mb-4">Commercial Property Expert</p>
+                        <div class="space-y-2 text-sm text-gray-600">
+                          <div class="flex items-center gap-2">
+                            <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>£30M+ property portfolio</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>40+ years experience</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                            </svg>
+                            <span>1,200+ investors mentored</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-    // Training card
-    const trainingCard = createCard(null, 'border-2 border-primary/20 shadow-lg');
-    const trainingContent = createCardContent(null, 'p-8');
-    
-    const trainingHeader = createElement('div', { className: 'text-center mb-6' });
-    const trainingIcon = createElement('div', { className: 'w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4' });
-    trainingIcon.appendChild(icons.Calendar());
-    trainingHeader.appendChild(trainingIcon);
-    trainingHeader.appendChild(createElement('h3', { className: 'text-2xl font-bold mb-4' }, '2-Day Live Training Includes:'));
-    trainingContent.appendChild(trainingHeader);
+                <!-- Abi Hookway -->
+                <div class="border-2 border-blue-200 shadow-lg bg-white rounded-lg">
+                  <div class="p-8">
+                    <div class="flex items-start gap-6">
+                      <div class="w-24 h-24 bg-gray-200 rounded-full flex-shrink-0"></div>
+                      <div>
+                        <h3 class="text-xl font-bold mb-2">Abi Hookway</h3>
+                        <p class="text-sm text-blue-600 font-medium mb-4">Property Investing Mum</p>
+                        <div class="space-y-2 text-sm text-gray-600">
+                          <div class="flex items-center gap-2">
+                            <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            </svg>
+                            <span>£8M+ portfolio in 8 years</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
+                            </svg>
+                            <span>From £24k debt to millionaire</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <svg class="h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                            </svg>
+                            <span>Single mum success story</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    // Training benefits
-    const trainingBenefits = [
-      'How to safely access your property equity for new investments',
-      'Buy-refurb-refinance mastery training',
-      'Serviced accommodation business setup',
-      'Sourcing & selling deals for £10k+ monthly',
-      'No money down deal strategies',
-      'Property LTD entity setup & management',
-      'Live Q&A sessions',
-      'Mindset training',
-      'Complete property toolkit',
-      '90-day follow-up support'
-    ];
+        <!-- Social Proof & Testimonials -->
+        <section class="py-12 md:py-20 bg-gray-50">
+          <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-6xl mx-auto">
+              <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-5xl font-black mb-6">
+                  What Our <span class="bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">Students Say</span>
+                </h2>
+                <p class="text-lg text-gray-700">
+                  Real results from real people
+                </p>
+              </div>
 
-    const benefitsList = createElement('div', { className: 'space-y-4' });
-    trainingBenefits.forEach(benefit => {
-      const benefitItem = createElement('div', { className: 'flex items-start gap-3' });
-      benefitItem.appendChild(icons.CheckCircle());
-      benefitItem.appendChild(createElement('span', { className: 'text-sm' }, benefit));
-      benefitsList.appendChild(benefitItem);
-    });
-    trainingContent.appendChild(benefitsList);
-    trainingCard.appendChild(trainingContent);
-    gridContainer.appendChild(trainingCard);
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <!-- Testimonial 1 -->
+                <div class="border-0 shadow-lg bg-white rounded-lg">
+                  <div class="p-8">
+                    <div class="flex items-center mb-4">
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-6">
+                      "The strategies I learned at WTP helped me secure my first deal within 
+                      3 months. ROI was 15% in year one! The follow-up support was incredible."
+                    </p>
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium">Sarah Mitchell</p>
+                        <p class="text-xs text-gray-500">First-time Investor, Manchester</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-    // Bonuses card
-    const bonusCard = createCard(null, 'border-2 border-secondary/20 shadow-lg');
-    const bonusContent = createCardContent(null, 'p-8');
-    
-    const bonusHeader = createElement('div', { className: 'text-center mb-6' });
-    bonusHeader.appendChild(createBadge('EXCLUSIVE BONUSES', 'mb-4 bg-green-600 text-white px-4 py-2'));
-    bonusHeader.appendChild(createElement('h3', { className: 'text-2xl font-bold mb-2' }, 'Premium Resources'));
-    bonusHeader.appendChild(createElement('p', { className: 'text-sm text-foreground/70' }, 'Valued at £5,625 - Included FREE'));
-    bonusContent.appendChild(bonusHeader);
+                <!-- Testimonial 2 -->
+                <div class="border-0 shadow-lg bg-white rounded-lg">
+                  <div class="p-8">
+                    <div class="flex items-center mb-4">
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-6">
+                      "Best investment I ever made. Paul and Abi's expertise is unmatched. 
+                      I've built a £2M portfolio in 18 months using their strategies."
+                    </p>
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium">James Robinson</p>
+                        <p class="text-xs text-gray-500">Portfolio Investor, Birmingham</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-    // Bonus items
-    const bonusItems = [
-      { title: '£100 Touchstone Education Voucher', desc: 'Redeemable across our complete course portfolio' },
-      { title: 'Property Success E-Book Collection (£30 value)', desc: '£180K profit in 6 months through strategic property flipping' },
-      { title: 'Advanced Flipping Analysis Tool (£495 value)', desc: 'Professional-grade calculator for property valuation and profit estimation' },
-      { title: 'Wealth Assessment Platform (£5,000 value)', desc: 'Comprehensive wealth positioning and growth projections, plus our Net Worth Calculator' }
-    ];
+                <!-- Testimonial 3 -->
+                <div class="border-0 shadow-lg bg-white rounded-lg">
+                  <div class="p-8">
+                    <div class="flex items-center mb-4">
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <svg class="h-4 w-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-6">
+                      "The networking alone was worth the ticket price. I've partnered 
+                      with 3 other attendees on deals totalling £5M in value."
+                    </p>
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p class="font-medium">Emma Thompson</p>
+                        <p class="text-xs text-gray-500">Property Developer, London</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-    const bonusList = createElement('div', { className: 'space-y-4' });
-    bonusItems.forEach(item => {
-      const bonusItem = createElement('div', { className: 'flex items-start gap-3' });
-      bonusItem.appendChild(icons.Award());
-      const bonusText = createElement('div');
-      bonusText.appendChild(createElement('span', { className: 'font-medium text-sm' }, item.title));
-      bonusText.appendChild(createElement('p', { className: 'text-xs text-foreground/60' }, item.desc));
-      bonusItem.appendChild(bonusText);
-      bonusList.appendChild(bonusItem);
-    });
-    bonusContent.appendChild(bonusList);
+        <!-- Money-Back Guarantee -->
+        <section class="py-12 md:py-20 bg-green-50">
+          <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center">
+              <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="h-10 w-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              
+              <h2 class="text-3xl md:text-4xl font-black mb-6">
+                100% <span class="bg-gradient-to-r from-green-500 to-green-700 bg-clip-text text-transparent">Money-Back Guarantee</span>
+              </h2>
+              
+              <p class="text-lg text-gray-700 mb-8 max-w-3xl mx-auto">
+                Dive into day one with ease. If you don't find our training top-notch, 
+                we ensure a hassle-free refund. No questions asked.
+              </p>
+              
+              <p class="text-sm text-gray-600 italic">
+                "We don't want your money - we want your commitment to success!"
+              </p>
+            </div>
+          </div>
+        </section>
 
-    bonusContent.appendChild(createSeparator());
+        <!-- Final CTA -->
+        <section class="py-12 md:py-20 bg-white">
+          <div class="container mx-auto px-4 md:px-6">
+            <div class="max-w-4xl mx-auto text-center">
+              <div class="mb-6 bg-red-600 text-white px-6 py-3 text-lg font-bold inline-block rounded">
+                ⚡ LIMITED TIME: 80% OFF ENDS SOON
+              </div>
+              
+              <h2 class="text-3xl md:text-5xl font-black mb-6">
+                Don't Miss This <span class="bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">Exclusive Opportunity</span>
+              </h2>
+              
+              <p class="text-lg text-gray-700 mb-8">
+                This 80% discount is only available to those who engaged with our content. 
+                Secure your spot before the price returns to £497.
+              </p>
 
-    const bonusTotal = createElement('div', { className: 'text-center' });
-    bonusTotal.appendChild(createElement('div', { className: 'text-2xl font-black text-green-600 mb-2' }, 'Total Value: £5,625'));
-    bonusTotal.appendChild(createElement('div', { className: 'text-sm text-foreground/70' }, 'Your Investment: £99'));
-    bonusContent.appendChild(bonusTotal);
+              <div class="border-2 border-blue-600 shadow-2xl max-w-2xl mx-auto bg-white rounded-lg">
+                <div class="p-8">
+                  <div class="flex justify-center items-baseline gap-4 mb-6">
+                    <span class="text-5xl font-black text-blue-600">£99</span>
+                    <div class="text-left">
+                      <div class="text-2xl line-through text-gray-500">£497</div>
+                      <div class="text-sm font-bold text-green-600">Save £398 Today</div>
+                    </div>
+                  </div>
+                  
+                  <button id="final-cta-btn" class="w-full py-6 text-xl font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors mb-4">
+                    Claim My WTP Spot Now →
+                  </button>
+                  
+                  <div class="grid grid-cols-2 gap-4 text-xs text-gray-500">
+                    <div class="flex items-center justify-center">
+                      <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                      </svg>
+                      <span>Money-Back Guarantee</span>
+                    </div>
+                    <div class="flex items-center justify-center">
+                      <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                      </svg>
+                      <span>Limited Availability</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-    bonusCard.appendChild(bonusContent);
-    gridContainer.appendChild(bonusCard);
-    includedContent.appendChild(gridContainer);
-
-    // Final CTA in this section
-    const finalCTA = createElement('div', { className: 'text-center' });
-    const finalCTACard = createCard(null, 'border-2 border-primary shadow-2xl max-w-2xl mx-auto');
-    const finalCTAContent = createCardContent(null, 'p-8');
-    
-    finalCTAContent.appendChild(createElement('h3', { className: 'text-2xl font-bold mb-4' }, 'Ready to Transform Your Financial Future?'));
-    finalCTAContent.appendChild(createElement('p', { className: 'text-foreground/70 mb-6' }, 'Join 1,200+ successful students who\'ve used these exact strategies to build wealth through property'));
-    finalCTAContent.appendChild(createButton('Get My WTP Ticket for £99', handleCheckoutClick, 'w-full py-6 text-xl font-bold bg-primary text-white hover:bg-primary/90 mb-4', icons.ArrowRight()));
-    finalCTAContent.appendChild(createElement('p', { className: 'text-xs text-foreground/60' }, 'Protected by our 100% money-back guarantee'));
-    
-    finalCTACard.appendChild(finalCTAContent);
-    finalCTA.appendChild(finalCTACard);
-    includedContent.appendChild(finalCTA);
-
-    includedContainer.appendChild(includedContent);
-    includedSection.appendChild(includedContainer);
-    mainDiv.appendChild(includedSection);
-
-    // Meet Your Trainers Section
-    const trainersSection = createElement('section', { className: 'py-12 md:py-20 bg-white' });
-    const trainersContainer = createElement('div', { className: 'container mx-auto px-4 md:px-6' });
-    const trainersContent = createElement('div', { className: 'max-w-6xl mx-auto' });
-
-    const trainersHeader = createElement('div', { className: 'text-center mb-12' });
-    const trainersH2 = createElement('h2', { className: 'text-3xl md:text-5xl font-black mb-6' });
-    trainersH2.appendChild(document.createTextNode('Meet Your '));
-    trainersH2.appendChild(createHighlight('Expert Trainers', 'primary'));
-    trainersHeader.appendChild(trainersH2);
-    trainersContent.appendChild(trainersHeader);
-
-    // Trainers grid
-    const trainersGrid = createElement('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-8 mb-12' });
-
-    // Paul Smith
-    const paulCard = createCard(null, 'border-2 border-primary/20 shadow-lg');
-    const paulContent = createCardContent(null, 'p-8');
-    const paulFlex = createElement('div', { className: 'flex items-start gap-6' });
-    
-    const paulAvatar = createElement('div', { className: 'w-24 h-24 bg-gray-200 rounded-full flex-shrink-0' });
-    const paulInfo = createElement('div');
-    paulInfo.appendChild(createElement('h3', { className: 'text-xl font-bold mb-2' }, 'Paul Smith'));
-    paulInfo.appendChild(createElement('p', { className: 'text-sm text-primary font-medium mb-4' }, 'Commercial Property Expert'));
-    
-    const paulStats = createElement('div', { className: 'space-y-2 text-sm text-foreground/70' });
-    const paulStat1 = createElement('div', { className: 'flex items-center gap-2' });
-    paulStat1.appendChild(icons.TrendingUp());
-    paulStat1.appendChild(createElement('span', {}, '£30M+ property portfolio'));
-    
-    const paulStat2 = createElement('div', { className: 'flex items-center gap-2' });
-    paulStat2.appendChild(icons.Award());
-    paulStat2.appendChild(createElement('span', {}, '40+ years experience'));
-    
-    const paulStat3 = createElement('div', { className: 'flex items-center gap-2' });
-    paulStat3.appendChild(icons.Users());
-    paulStat3.appendChild(createElement('span', {}, '1,200+ investors mentored'));
-    
-    paulStats.appendChild(paulStat1);
-    paulStats.appendChild(paulStat2);
-    paulStats.appendChild(paulStat3);
-    paulInfo.appendChild(paulStats);
-    
-    paulFlex.appendChild(paulAvatar);
-    paulFlex.appendChild(paulInfo);
-    paulContent.appendChild(paulFlex);
-    paulCard.appendChild(paulContent);
-    trainersGrid.appendChild(paulCard);
-
-    // Abi Hookway
-    const abiCard = createCard(null, 'border-2 border-primary/20 shadow-lg');
-    const abiContent = createCardContent(null, 'p-8');
-    const abiFlex = createElement('div', { className: 'flex items-start gap-6' });
-    
-    const abiAvatar = createElement('div', { className: 'w-24 h-24 bg-gray-200 rounded-full flex-shrink-0' });
-    const abiInfo = createElement('div');
-    abiInfo.appendChild(createElement('h3', { className: 'text-xl font-bold mb-2' }, 'Abi Hookway'));
-    abiInfo.appendChild(createElement('p', { className: 'text-sm text-primary font-medium mb-4' }, 'Property Investing Mum'));
-    
-    const abiStats = createElement('div', { className: 'space-y-2 text-sm text-foreground/70' });
-    const abiStat1 = createElement('div', { className: 'flex items-center gap-2' });
-    abiStat1.appendChild(icons.TrendingUp());
-    abiStat1.appendChild(createElement('span', {}, '£8M+ portfolio in 8 years'));
-    
-    const abiStat2 = createElement('div', { className: 'flex items-center gap-2' });
-    abiStat2.appendChild(icons.Target());
-    abiStat2.appendChild(createElement('span', {}, 'From £24k debt to millionaire'));
-    
-    const abiStat3 = createElement('div', { className: 'flex items-center gap-2' });
-    abiStat3.appendChild(icons.Users());
-    abiStat3.appendChild(createElement('span', {}, 'Single mum success story'));
-    
-    abiStats.appendChild(abiStat1);
-    abiStats.appendChild(abiStat2);
-    abiStats.appendChild(abiStat3);
-    abiInfo.appendChild(abiStats);
-    
-    abiFlex.appendChild(abiAvatar);
-    abiFlex.appendChild(abiInfo);
-    abiContent.appendChild(abiFlex);
-    abiCard.appendChild(abiContent);
-    trainersGrid.appendChild(abiCard);
-
-    trainersContent.appendChild(trainersGrid);
-    trainersContainer.appendChild(trainersContent);
-    trainersSection.appendChild(trainersContainer);
-    mainDiv.appendChild(trainersSection);
-
-    // Testimonials Section
-    const testimonialsSection = createElement('section', { className: 'py-12 md:py-20 bg-gray-50' });
-    const testimonialsContainer = createElement('div', { className: 'container mx-auto px-4 md:px-6' });
-    const testimonialsContent = createElement('div', { className: 'max-w-6xl mx-auto' });
-
-    const testimonialsHeader = createElement('div', { className: 'text-center mb-12' });
-    const testimonialsH2 = createElement('h2', { className: 'text-3xl md:text-5xl font-black mb-6' });
-    testimonialsH2.appendChild(document.createTextNode('What Our '));
-    testimonialsH2.appendChild(createHighlight('Students Say', 'secondary'));
-    testimonialsHeader.appendChild(testimonialsH2);
-    testimonialsHeader.appendChild(createElement('p', { className: 'text-lg text-foreground/80' }, 'Real results from real people'));
-    testimonialsContent.appendChild(testimonialsHeader);
-
-    // Testimonials grid
-    const testimonialsGrid = createElement('div', { className: 'grid grid-cols-1 md:grid-cols-3 gap-8 mb-12' });
-
-    const testimonials = [
-      {
-        quote: 'The strategies I learned at WTP helped me secure my first deal within 3 months. ROI was 15% in year one! The follow-up support was incredible.',
-        name: 'Sarah Mitchell',
-        title: 'First-time Investor, Manchester'
-      },
-      {
-        quote: 'Best investment I ever made. Paul and Abi\'s expertise is unmatched. I\'ve built a £2M portfolio in 18 months using their strategies.',
-        name: 'James Robinson',
-        title: 'Portfolio Investor, Birmingham'
-      },
-      {
-        quote: 'The networking alone was worth the ticket price. I\'ve partnered with 3 other attendees on deals totalling £5M in value.',
-        name: 'Emma Thompson',
-        title: 'Property Developer, London'
-      }
-    ];
-
-    testimonials.forEach(testimonial => {
-      const testimonialCard = createCard(null, 'border-0 shadow-lg');
-      const testimonialContent = createCardContent(null, 'p-8');
-      
-      // Stars
-      const stars = createElement('div', { className: 'flex items-center mb-4' });
-      for (let i = 0; i < 5; i++) {
-        stars.appendChild(icons.Star());
-      }
-      testimonialContent.appendChild(stars);
-      
-      // Quote
-      testimonialContent.appendChild(createElement('p', { className: 'text-sm text-foreground/70 mb-6' }, `"${testimonial.quote}"`));
-      
-      // Author
-      const author = createElement('div', { className: 'flex items-center gap-3' });
-      const avatar = createElement('div', { className: 'w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center' });
-      avatar.appendChild(icons.User());
-      
-      const authorInfo = createElement('div');
-      authorInfo.appendChild(createElement('p', { className: 'font-medium' }, testimonial.name));
-      authorInfo.appendChild(createElement('p', { className: 'text-xs text-foreground/60' }, testimonial.title));
-      
-      author.appendChild(avatar);
-      author.appendChild(authorInfo);
-      testimonialContent.appendChild(author);
-      
-      testimonialCard.appendChild(testimonialContent);
-      testimonialsGrid.appendChild(testimonialCard);
-    });
-
-    testimonialsContent.appendChild(testimonialsGrid);
-    testimonialsContainer.appendChild(testimonialsContent);
-    testimonialsSection.appendChild(testimonialsContainer);
-    mainDiv.appendChild(testimonialsSection);
-
-    // Money-Back Guarantee Section
-    const guaranteeSection = createElement('section', { className: 'py-12 md:py-20 bg-green-50' });
-    const guaranteeContainer = createElement('div', { className: 'container mx-auto px-4 md:px-6' });
-    const guaranteeContent = createElement('div', { className: 'max-w-4xl mx-auto text-center' });
-
-    const guaranteeIcon = createElement('div', { className: 'w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6' });
-    const shieldIcon = icons.Shield();
-    shieldIcon.style.color = 'white';
-    shieldIcon.style.width = '40px';
-    shieldIcon.style.height = '40px';
-    guaranteeIcon.appendChild(shieldIcon);
-    guaranteeContent.appendChild(guaranteeIcon);
-
-    const guaranteeH2 = createElement('h2', { className: 'text-3xl md:text-4xl font-black mb-6' });
-    guaranteeH2.appendChild(document.createTextNode('100% '));
-    guaranteeH2.appendChild(createHighlight('Money-Back Guarantee', 'green'));
-    guaranteeContent.appendChild(guaranteeH2);
-
-    guaranteeContent.appendChild(createElement('p', { className: 'text-lg text-foreground/80 mb-8 max-w-3xl mx-auto' }, 'Dive into day one with ease. If you don\'t find our training top-notch, we ensure a hassle-free refund. No questions asked.'));
-    guaranteeContent.appendChild(createElement('p', { className: 'text-sm text-foreground/60 italic' }, '"We don\'t want your money - we want your commitment to success!"'));
-
-    guaranteeContainer.appendChild(guaranteeContent);
-    guaranteeSection.appendChild(guaranteeContainer);
-    mainDiv.appendChild(guaranteeSection);
-
-    // Final CTA Section
-    const finalCTASection = createElement('section', { className: 'py-12 md:py-20 bg-white' });
-    const finalCTAContainer = createElement('div', { className: 'container mx-auto px-4 md:px-6' });
-    const finalCTAContent = createElement('div', { className: 'max-w-4xl mx-auto text-center' });
-
-    finalCTAContent.appendChild(createBadge('⚡ LIMITED TIME: 80% OFF ENDS SOON', 'mb-6 bg-red-600 text-white px-6 py-3 text-lg font-bold'));
-
-    const finalH2 = createElement('h2', { className: 'text-3xl md:text-5xl font-black mb-6' });
-    finalH2.appendChild(document.createTextNode('Don\'t Miss This '));
-    finalH2.appendChild(createHighlight('Exclusive Opportunity', 'secondary'));
-    finalCTAContent.appendChild(finalH2);
-
-    finalCTAContent.appendChild(createElement('p', { className: 'text-lg text-foreground/80 mb-8' }, 'This 80% discount is only available to those who engaged with our content. Secure your spot before the price returns to £497.'));
-
-    // Final price card
-    const finalPriceCard = createCard(null, 'border-2 border-primary shadow-2xl max-w-2xl mx-auto');
-    const finalPriceContent = createCardContent(null, 'p-8');
-
-    const finalPriceDisplay = createElement('div', { className: 'flex justify-center items-baseline gap-4 mb-6' });
-    finalPriceDisplay.appendChild(createElement('span', { className: 'text-5xl font-black text-primary' }, '£99'));
-    
-    const finalPriceDetails = createElement('div', { className: 'text-left' });
-    finalPriceDetails.appendChild(createElement('div', { className: 'text-2xl line-through text-gray-500' }, '£497'));
-    finalPriceDetails.appendChild(createElement('div', { className: 'text-sm font-bold text-green-600' }, 'Save £398 Today'));
-    finalPriceDisplay.appendChild(finalPriceDetails);
-    finalPriceContent.appendChild(finalPriceDisplay);
-
-    finalPriceContent.appendChild(createButton('Claim My WTP Spot Now', handleCheckoutClick, 'w-full py-6 text-xl font-bold bg-primary text-white hover:bg-primary/90 mb-4', icons.ArrowRight()));
-
-    const finalTrustGrid = createElement('div', { className: 'grid grid-cols-2 gap-4 text-xs text-foreground/60' });
-    
-    const finalGuarantee = createElement('div', { className: 'flex items-center justify-center' });
-    finalGuarantee.appendChild(icons.Shield());
-    finalGuarantee.appendChild(createElement('span', { className: 'ml-1' }, 'Money-Back Guarantee'));
-    
-    const finalLimited = createElement('div', { className: 'flex items-center justify-center' });
-    finalLimited.appendChild(icons.Clock());
-    finalLimited.appendChild(createElement('span', { className: 'ml-1' }, 'Limited Availability'));
-    
-    finalTrustGrid.appendChild(finalGuarantee);
-    finalTrustGrid.appendChild(finalLimited);
-    finalPriceContent.appendChild(finalTrustGrid);
-
-    finalPriceCard.appendChild(finalPriceContent);
-    finalCTAContent.appendChild(finalPriceCard);
-
-    // Contact info
-    const contactInfo = createElement('div', { className: 'mt-8 text-sm text-foreground/60' });
-    contactInfo.appendChild(createElement('p', {}, 'Questions? Contact our team:'));
-    
-    const contactFlex = createElement('div', { className: 'flex justify-center gap-6 mt-2' });
-    
-    const phoneContact = createElement('div', { className: 'flex items-center' });
-    phoneContact.appendChild(icons.Phone());
-    phoneContact.appendChild(createElement('span', { className: 'ml-1' }, '0800 123 4567'));
-    
-    const emailContact = createElement('div', { className: 'flex items-center' });
-    emailContact.appendChild(icons.Mail());
-    emailContact.appendChild(createElement('span', { className: 'ml-1' }, 'support@touchstoneeducation.co.uk'));
-    
-    contactFlex.appendChild(phoneContact);
-    contactFlex.appendChild(emailContact);
-    contactInfo.appendChild(contactFlex);
-    finalCTAContent.appendChild(contactInfo);
-
-    finalCTAContainer.appendChild(finalCTAContent);
-    finalCTASection.appendChild(finalCTAContainer);
-    mainDiv.appendChild(finalCTASection);
-
-    // Add all styles
-    const styles = `
-      .container { max-width: 1200px; margin: 0 auto; }
-      .bg-primary { background-color: #3b82f6; }
-      .text-primary { color: #3b82f6; }
-      .bg-secondary { background-color: #10b981; }
-      .text-secondary { color: #10b981; }
-      .bg-green-600 { background-color: #059669; }
-      .bg-red-600 { background-color: #dc2626; }
-      .text-white { color: white; }
-      .text-gray-500 { color: #6b7280; }
-      .text-green-600 { color: #059669; }
-      .text-foreground\\/90 { color: rgba(0, 0, 0, 0.9); }
-      .text-foreground\\/80 { color: rgba(0, 0, 0, 0.8); }
-      .text-foreground\\/70 { color: rgba(0, 0, 0, 0.7); }
-      .text-foreground\\/60 { color: rgba(0, 0, 0, 0.6); }
-      .border-primary { border-color: #3b82f6; }
-      .border-primary\\/20 { border-color: rgba(59, 130, 246, 0.2); }
-      .border-secondary\\/20 { border-color: rgba(16, 185, 129, 0.2); }
-      .bg-primary\\/10 { background-color: rgba(59, 130, 246, 0.1); }
-      .bg-primary\\/20 { background-color: rgba(59, 130, 246, 0.2); }
-      .hover\\:bg-primary\\/90:hover { background-color: rgba(59, 130, 246, 0.9); }
-      .font-black { font-weight: 900; }
-      .font-bold { font-weight: 700; }
-      .font-medium { font-weight: 500; }
-      .font-extrabold { font-weight: 800; }
-      .leading-\\[1\\.05\\] { line-height: 1.05; }
-      .tracking-tight { letter-spacing: -0.025em; }
-      .rounded-lg { border-radius: 0.5rem; }
-      .rounded-full { border-radius: 9999px; }
-      .rounded-md { border-radius: 0.375rem; }
-      .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-      .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-      .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-      .bg-gradient-to-b { background-image: linear-gradient(to bottom, var(--tw-gradient-stops)); }
-      .from-gray-50 { --tw-gradient-from: #f9fafb; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(249, 250, 251, 0)); }
-      .to-white { --tw-gradient-to: #ffffff; }
-      .bg-gray-50 { background-color: #f9fafb; }
-      .bg-gray-200 { background-color: #e5e7eb; }
-      .bg-white { background-color: white; }
-      .bg-green-50 { background-color: #f0fdf4; }
-      .bg-green-500 { background-color: #22c55e; }
-      .line-through { text-decoration: line-through; }
-      .italic { font-style: italic; }
-      .space-y-4 > * + * { margin-top: 1rem; }
-      .space-y-2 > * + * { margin-top: 0.5rem; }
-      .grid { display: grid; }
-      .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-      .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .gap-8 { gap: 2rem; }
-      .gap-6 { gap: 1.5rem; }
-      .gap-4 { gap: 1rem; }
-      .gap-3 { gap: 0.75rem; }
-      .gap-2 { gap: 0.5rem; }
-      .flex { display: flex; }
-      .items-center { align-items: center; }
-      .items-start { align-items: flex-start; }
-      .items-baseline { align-items: baseline; }
-      .justify-center { justify-content: center; }
-      .justify-between { justify-content: space-between; }
-      .text-center { text-align: center; }
-      .text-left { text-align: left; }
-      .max-w-2xl { max-width: 42rem; }
-      .max-w-3xl { max-width: 48rem; }
-      .max-w-4xl { max-width: 56rem; }
-      .max-w-5xl { max-width: 64rem; }
-      .max-w-6xl { max-width: 72rem; }
-      .mx-auto { margin-left: auto; margin-right: auto; }
-      .mb-2 { margin-bottom: 0.5rem; }
-      .mb-4 { margin-bottom: 1rem; }
-      .mb-6 { margin-bottom: 1.5rem; }
-      .mb-8 { margin-bottom: 2rem; }
-      .mb-12 { margin-bottom: 3rem; }
-      .mt-2 { margin-top: 0.5rem; }
-      .mt-8 { margin-top: 2rem; }
-      .ml-1 { margin-left: 0.25rem; }
-      .ml-2 { margin-left: 0.5rem; }
-      .mr-1 { margin-right: 0.25rem; }
-      .pt-8 { padding-top: 2rem; }
-      .pb-12 { padding-bottom: 3rem; }
-      .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-      .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
-      .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
-      .px-1 { padding-left: 0.25rem; padding-right: 0.25rem; }
-      .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
-      .px-4 { padding-left: 1rem; padding-right: 1rem; }
-      .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-      .p-6 { padding: 1.5rem; }
-      .p-8 { padding: 2rem; }
-      .w-full { width: 100%; }
-      .w-10 { width: 2.5rem; }
-      .w-16 { width: 4rem; }
-      .w-20 { width: 5rem; }
-      .w-24 { width: 6rem; }
-      .h-10 { height: 2.5rem; }
-      .h-16 { height: 4rem; }
-      .h-20 { height: 5rem; }
-      .h-24 { height: 6rem; }
-      .h-\\[1px\\] { height: 1px; }
-      .min-h-screen { min-height: 100vh; }
-      .text-xs { font-size: 0.75rem; line-height: 1rem; }
-      .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-      .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
-      .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-      .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-      .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-      .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
-      .text-5xl { font-size: 3rem; line-height: 1; }
-      .border { border-width: 1px; }
-      .border-2 { border-width: 2px; }
-      .border-0 { border-width: 0px; }
-      .rounded { border-radius: 0.25rem; }
-      .inline-flex { display: inline-flex; }
-      .flex-shrink-0 { flex-shrink: 0; }
-      .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-      .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
-      .duration-700 { transition-duration: 700ms; }
-      .opacity-100 { opacity: 1; }
-      .translate-y-0 { transform: translateY(0px); }
-      .transform { transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y)); }
-      .relative { position: relative; }
-      .z-10 { z-index: 10; }
-      .overflow-hidden { overflow: hidden; }
-      .focus-visible\\:outline-none:focus-visible { outline: 2px solid transparent; outline-offset: 2px; }
-      .focus-visible\\:ring-2:focus-visible { --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color); --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color); box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000); }
-      .focus-visible\\:ring-ring:focus-visible { --tw-ring-color: #3b82f6; }
-      .focus-visible\\:ring-offset-2:focus-visible { --tw-ring-offset-width: 2px; }
-      .disabled\\:opacity-50:disabled { opacity: 0.5; }
-      .disabled\\:pointer-events-none:disabled { pointer-events: none; }
-      .ring-offset-background { --tw-ring-offset-color: #ffffff; }
-      .hover\\:text-gray-200:hover { color: #e5e7eb; }
-      .cursor-pointer { cursor: pointer; }
-      .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
-      .shrink-0 { flex-shrink: 0; }
-      .bg-border { background-color: #e4e4e7; }
-      .bg-card { background-color: #ffffff; }
-      .text-card-foreground { color: #0f172a; }
-      
-      @media (min-width: 768px) {
-        .md\\:text-6xl { font-size: 3.75rem; line-height: 1; }
-        .md\\:text-5xl { font-size: 3rem; line-height: 1; }
-        .md\\:text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-        .md\\:mb-8 { margin-bottom: 2rem; }
-        .md\\:pt-12 { padding-top: 3rem; }
-        .md\\:pb-20 { padding-bottom: 5rem; }
-        .md\\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
-        .md\\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-        .md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .md\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      }
-      
-      @media (min-width: 1024px) {
-        .lg\\:text-7xl { font-size: 4.5rem; line-height: 1; }
-        .lg\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      }
+              <div class="mt-8 text-sm text-gray-600">
+                <p>Questions? Contact our team:</p>
+                <div class="flex justify-center gap-6 mt-2">
+                  <div class="flex items-center">
+                    <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                    </svg>
+                    <span>0800 123 4567</span>
+                  </div>
+                  <div class="flex items-center">
+                    <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                    <span>support@touchstoneeducation.co.uk</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     `;
 
-    if (!document.getElementById('dto-offer-styles')) {
-      const styleSheet = createElement('style', { id: 'dto-offer-styles' });
-      styleSheet.textContent = styles;
-      document.head.appendChild(styleSheet);
+    container.innerHTML = html;
+
+    // Add event listeners for all CTA buttons
+    const mainCtaBtn = document.getElementById('main-cta-btn');
+    const secondaryCtaBtn = document.getElementById('secondary-cta-btn');
+    const finalCtaBtn = document.getElementById('final-cta-btn');
+
+    if (mainCtaBtn) {
+      mainCtaBtn.addEventListener('click', handleCheckoutClick);
+    }
+    if (secondaryCtaBtn) {
+      secondaryCtaBtn.addEventListener('click', handleCheckoutClick);
+    }
+    if (finalCtaBtn) {
+      finalCtaBtn.addEventListener('click', handleCheckoutClick);
     }
 
-    // Clear container and add the component
-    container.innerHTML = '';
-    container.appendChild(mainDiv);
+    // Add some basic styling if not already present
+    if (!document.getElementById('dto-offer-styles')) {
+      const style = document.createElement('style');
+      style.id = 'dto-offer-styles';
+      style.textContent = `
+        .dto-offer-container * {
+          box-sizing: border-box;
+        }
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+          .md\\:text-6xl { font-size: 3rem; }
+          .md\\:text-5xl { font-size: 2.5rem; }
+          .md\\:py-20 { padding-top: 3rem; padding-bottom: 3rem; }
+          .md\\:px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+          .md\\:grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+          .md\\:grid-cols-3 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+          .lg\\:grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
   }
 
   // Initialize when DOM is ready
